@@ -11,21 +11,27 @@ export class PlacesService {
       "The Amazing Koutoubia",
       "Beautiful Old mosque.",
       "https://bit.ly/3kLWcAL",
-      0.0
+      0.0,
+      new Date("2020-10-02"),
+      new Date("2020-11-02")
     ),
     new Place(
       "p2",
       "Jami al-Qarawiyyin",
       "The first university in the world.",
       "https://bit.ly/2HRRNgO",
-      0.0
+      0.0,
+      new Date("2020-10-02"),
+      new Date("2020-11-02")
     ),
     new Place(
       "p3",
       "Hassan II Mosque",
       "Biggest mosque in Africa.",
       "https://bit.ly/2TDaW90",
-      0.0
+      0.0,
+      new Date("2020-10-02"),
+      new Date("2020-11-02")
     ),
   ];
 
