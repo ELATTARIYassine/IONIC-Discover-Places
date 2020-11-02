@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { NavController } from "@ionic/angular";
 import { Place } from "../../place.model";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-offer-bookings",
@@ -11,11 +12,19 @@ import { Place } from "../../place.model";
 })
 export class OfferBookingsPage implements OnInit {
   place: Place;
+  placeSub: Subscription;
+
   constructor(
     private navCtrl: NavController,
     private route: ActivatedRoute,
     private placesService: PlacesService
   ) {}
+
+  ngOnDestroy(): void {
+    if (this.placeSub) {
+      this.placeSub.unsubscribe();
+    }
+  }
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap) => {
@@ -23,7 +32,11 @@ export class OfferBookingsPage implements OnInit {
         this.navCtrl.navigateBack("/places/tabs/offers");
         return;
       }
-      this.place = this.placesService.getPlace(paramMap.get("placeId"));
+      this.placeSub = this.placesService
+        .getPlace(paramMap.get("placeId"))
+        .subscribe((place) => {
+          this.place = place;
+        });
     });
   }
   fixNavigation() {

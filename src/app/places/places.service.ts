@@ -1,11 +1,16 @@
+import { AuthService } from "./../auth/auth.service";
 import { Place } from "./place.model";
 import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import { take, map, tap, delay } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
 })
 export class PlacesService {
-  private _places: Place[] = [
+  constructor(private authService: AuthService) {}
+
+  private _places = new BehaviorSubject<Place[]>([
     new Place(
       "p1",
       "The Amazing Koutoubia",
@@ -13,7 +18,8 @@ export class PlacesService {
       "https://bit.ly/3kLWcAL",
       0.0,
       new Date("2020-10-02"),
-      new Date("2020-11-02")
+      new Date("2020-11-02"),
+      "abc"
     ),
     new Place(
       "p2",
@@ -22,7 +28,8 @@ export class PlacesService {
       "https://bit.ly/2HRRNgO",
       0.0,
       new Date("2020-10-02"),
-      new Date("2020-11-02")
+      new Date("2020-11-02"),
+      "id1"
     ),
     new Place(
       "p3",
@@ -31,17 +38,47 @@ export class PlacesService {
       "https://bit.ly/2TDaW90",
       0.0,
       new Date("2020-10-02"),
-      new Date("2020-11-02")
+      new Date("2020-11-02"),
+      "id1"
     ),
-  ];
-
-  constructor() {}
+  ]);
 
   get places() {
-    return [...this._places];
+    return this._places.asObservable();
   }
 
   getPlace(id: string) {
-    return { ...this._places.find((p) => p.id === id) };
+    return this._places.pipe(
+      take(1),
+      map((places) => {
+        return { ...places.find((p) => p.id === id) };
+      })
+    );
+  }
+
+  addPlace(
+    title: string,
+    description: string,
+    price: number,
+    dateFrom: Date,
+    dateTo: Date
+  ) {
+    const newPlace = new Place(
+      Math.random().toString(),
+      title,
+      description,
+      "https://bit.ly/2HRRNgO",
+      price,
+      dateFrom,
+      dateTo,
+      this.authService.userId
+    );
+    return this.places.pipe(
+      take(1),
+      delay(1000),
+      tap((places) => {
+        this._places.next(places.concat(newPlace));
+      })
+    );
   }
 }
