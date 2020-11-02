@@ -1,18 +1,18 @@
-import { Component, OnInit, Input, ViewChild } from "@angular/core";
-import { ModalController } from "@ionic/angular";
-import { NgForm } from "@angular/forms";
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { NgForm } from '@angular/forms';
 
-import { Place } from "../../places/place.model";
+import { Place } from '../../places/place.model';
 
 @Component({
-  selector: "app-create-booking",
-  templateUrl: "./create-booking.component.html",
-  styleUrls: ["./create-booking.component.scss"],
+  selector: 'app-create-booking',
+  templateUrl: './create-booking.component.html',
+  styleUrls: ['./create-booking.component.scss']
 })
 export class CreateBookingComponent implements OnInit {
   @Input() selectedPlace: Place;
-  @Input() selectedMode: "select" | "random";
-  @ViewChild("f") form: NgForm;
+  @Input() selectedMode: 'select' | 'random';
+  @ViewChild('f') form: NgForm;
   startDate: string;
   endDate: string;
 
@@ -21,7 +21,7 @@ export class CreateBookingComponent implements OnInit {
   ngOnInit() {
     const availableFrom = new Date(this.selectedPlace.availableFrom);
     const availableTo = new Date(this.selectedPlace.availableTo);
-    if (this.selectedMode === "random") {
+    if (this.selectedMode === 'random') {
       this.startDate = new Date(
         availableFrom.getTime() +
           Math.random() *
@@ -41,7 +41,7 @@ export class CreateBookingComponent implements OnInit {
   }
 
   onCancel() {
-    this.modalCtrl.dismiss(null, "cancel");
+    this.modalCtrl.dismiss(null, 'cancel');
   }
 
   onBookPlace() {
@@ -52,22 +52,20 @@ export class CreateBookingComponent implements OnInit {
     this.modalCtrl.dismiss(
       {
         bookingData: {
-          firstName: this.form.value["first-name"],
-          lastName: this.form.value["last-name"],
-          guestNumber: this.form.value["guest-number"],
-          startDate: this.form.value["date-from"],
-          endDate: this.form.value["date-to"],
-        },
+          firstName: this.form.value['first-name'],
+          lastName: this.form.value['last-name'],
+          guestNumber: +this.form.value['guest-number'],
+          startDate: new Date(this.form.value['date-from']),
+          endDate: new Date(this.form.value['date-to'])
+        }
       },
-      "confirm"
+      'confirm'
     );
   }
 
   datesValid() {
-    if (this.form) {
-      const startDate = new Date(this.form.value["date-from"]);
-      const endDate = new Date(this.form.value["date-to"]);
-      return endDate > startDate;
-    }
+    const startDate = new Date(this.form.value['date-from']);
+    const endDate = new Date(this.form.value['date-to']);
+    return endDate > startDate;
   }
 }
